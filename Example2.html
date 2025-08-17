@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Calculator</title>
+    <style>
+        h2 {
+            font-weight: bold;
+        }
+
+        #result {
+            color: lightgreen;
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Simple Calculator</h2>
+    <input type="text" id="klu">
+    <button onclick="calculator()">=</button>
+    <button onclick="clearDisplay()">Clear</button>
+    [expr]
+    <div id="result"></div>
+
+    <script>
+        function calculator() {
+            try {
+                const expr = document.getElementById('klu').value;
+                const res = eval(expr);
+                document.getElementById('result').innerHTML = res;
+            } catch {
+                document.getElementById('result').innerHTML = 'Error';
+            }
+        }
+
+        function clearDisplay() {
+            document.getElementById('klu').value = '';
+            document.getElementById('result').innerHTML = '';
+        }
+    </script>
+</body>
+
+</html>
