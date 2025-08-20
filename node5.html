@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Advanced Calculator with multiple operations">
+    <title>Advanced Calculator - Node5</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main class="calculator">
+        <header>
+            <h2>Advanced Calculator</h2>
+        </header>
+        
+        <section class="input-section">
+            <input type="number" id="firstNumber" placeholder="Enter first number" aria-label="First number">
+            <input type="number" id="secondNumber" placeholder="Enter second number" aria-label="Second number">
+        </section>
+        
+        <section class="buttons">
+            <button type="button" onclick="performCalculation('add')" aria-label="Addition">+</button>
+            <button type="button" onclick="performCalculation('subtract')" aria-label="Subtraction">-</button>
+            <button type="button" onclick="performCalculation('multiply')" aria-label="Multiplication">×</button>
+            <button type="button" onclick="performCalculation('divide')" aria-label="Division">÷</button>
+            <button type="button" onclick="performCalculation('modulo')" aria-label="Modulo">%</button>
+            <button type="button" onclick="performCalculation('power')" aria-label="Power">^</button>
+            <button type="button" class="clear" onclick="clearCalculator()" aria-label="Clear all">Clear</button>
+        </section>
+        
+        <section class="result-section">
+            <p>Result: <span id="result" aria-live="polite">0</span></p>
+            <p class="operation-history">Last operation: <span id="lastOperation">None</span></p>
+        </section>
+    </main>
+
+    <script>
+        // Calculator functionality with error handling and validation
+        function performCalculation(operation) {
+            const num1 = parseFloat(document.getElementById('firstNumber').value);
+            const num2 = parseFloat(document.getElementById('secondNumber').value);
+            const resultElement = document.getElementById('result');
+            const operationElement = document.getElementById('lastOperation');
+            
+            // Input validation
+            if (isNaN(num1) || isNaN(num2)) {
+                resultElement.textContent = 'Error: Please enter valid numbers';
+                resultElement.style.color = '#f44336';
+                return;
+            }
+            
+            let result;
+            let operationSymbol;
+            
+            try {
+                switch(operation) {
+                    case 'add':
+                        result = num1 + num2;
+                        operationSymbol = '+';
+                        break;
+                    case 'subtract':
+                        result = num1 - num2;
+                        operationSymbol = '-';
+                        break;
+                    case 'multiply':
+                        result = num1 * num2;
+                        operationSymbol = '×';
+                        break;
+                    case 'divide':
+                        if (num2 === 0) {
+                            throw new Error('Division by zero is not allowed');
+                        }
+                        result = num1 / num2;
+                        operationSymbol = '÷';
+                        break;
+                    case 'modulo':
+                        if (num2 === 0) {
+                            throw new Error('Modulo by zero is not allowed');
+                        }
+                        result = num1 % num2;
+                        operationSymbol = '%';
+                        break;
+                    case 'power':
+                        result = Math.pow(num1, num2);
+                        operationSymbol = '^';
+                        break;
+                    default:
+                        throw new Error('Unknown operation');
+                }
+                
+                // Format result to avoid floating point precision issues
+                result = Math.round(result * 1000000) / 1000000;
+                
+                resultElement.textContent = result;
+                resultElement.style.color = '#333';
+                operationElement.textContent = `${num1} ${operationSymbol} ${num2} = ${result}`;
+                
+            } catch (error) {
+                resultElement.textContent = `Error: ${error.message}`;
+                resultElement.style.color = '#f44336';
+                operationElement.textContent = 'Error occurred';
+            }
+        }
+        
+        function clearCalculator() {
+            document.getElementById('firstNumber').value = '';
+            document.getElementById('secondNumber').value = '';
+            document.getElementById('result').textContent = '0';
+            document.getElementById('result').style.color = '#333';
+            document.getElementById('lastOperation').textContent = 'None';
+            
+            // Focus on first input for better UX
+            document.getElementById('firstNumber').focus();
+        }
+        
+        // Keyboard support
+        document.addEventListener('keydown', function(event) {
+            switch(event.key) {
+                case 'Enter':
+                    event.preventDefault();
+                    performCalculation('add');
+                    break;
+                case 'Escape':
+                    clearCalculator();
+                    break;
+                case '+':
+                    event.preventDefault();
+                    performCalculation('add');
+                    break;
+                case '-':
+                    event.preventDefault();
+                    performCalculation('subtract');
+                    break;
+                case '*':
+                    event.preventDefault();
+                    performCalculation('multiply');
+                    break;
+                case '/':
+                    event.preventDefault();
+                    performCalculation('divide');
+                    break;
+                case '%':
+                    event.preventDefault();
+                    performCalculation('modulo');
+                    break;
+            }
+        });
+        
+        // Initialize calculator
+        document.addEventListener('DOMContentLoaded', function() {
+            clearCalculator();
+        });
+    </script>
+</body>
+</html>
